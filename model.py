@@ -35,3 +35,5 @@ class Game():
     #izvajanje poteze igralca
     def move(self, collumn):
         continue
+        
+    #test
