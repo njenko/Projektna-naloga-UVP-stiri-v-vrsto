@@ -36,4 +36,4 @@ class Game():
     def move(self, collumn):
         pass
         
-    #test
+    
