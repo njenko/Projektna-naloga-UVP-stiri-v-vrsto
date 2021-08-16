@@ -30,10 +30,10 @@ class Game():
 
     #preverjanje zmage
     def win(self):
-        continue
+        pass
 
     #izvajanje poteze igralca
     def move(self, collumn):
-        continue
+        pass
         
     #test
