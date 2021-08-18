@@ -1,1 +1,2 @@
-#tukej bo v prihodnje spletni vmesnik
+import bottle, model
+

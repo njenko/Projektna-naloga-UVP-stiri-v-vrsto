@@ -67,6 +67,9 @@ class Game():
             return EMPTY            
 
 
+    #POTEZE
+
+    #pomožne metode za izvajanje poteze
     @staticmethod
     def move_is_possible(board, collumn):
         return board[0][collumn] == EMPTY
@@ -82,8 +85,24 @@ class Game():
 
     #POTEZA RAČUNALNIKA
 
+    #poišče vse poteze, s katerimi lahko računalnik ali igralec (s svojo naslednjo potezo) zaključita igro
+    def game_ending_moves(self):
+        game_enders = set()
+        current_game_board = copy.deepcopy(self.board)
+        for collumn in range(COLLUMNS):
+            board = copy.deepcopy(current_game_board)
+            if Game.move_is_possible(board, collumn):
+                self.board = Game.collumn_move(CMPTR, board, collumn)
+                if self.win() == CMPTR:
+                    game_enders.add((CMPTR, collumn))
+                board = copy.deepcopy(current_game_board)
+                self.board = Game.collumn_move(PLYR, board, collumn)
+                if self.win() == PLYR:
+                    game_enders.add((PLYR, collumn))
+        self.board = copy.deepcopy(current_game_board)
+        return game_enders
 
-
+    def
 
     #POTEZA IGRALCA
 
@@ -132,4 +151,8 @@ class Game():
         else:
             return self.single_player_move(collumn)
         
+
+
+class ActiveGame():
+    def __init__(self, )
     
