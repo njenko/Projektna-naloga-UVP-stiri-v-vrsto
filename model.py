@@ -102,7 +102,7 @@ class Game():
         self.board = copy.deepcopy(current_game_board)
         return game_enders
 
-    def
+    
 
     #POTEZA IGRALCA
 
@@ -154,5 +154,17 @@ class Game():
 
 
 class ActiveGame():
-    def __init__(self, )
+    def __init__(self, current_board_file):
+        self.current_board_file = current_board_file
+        self.games = {}
+
+    def game_id_open(self):
+        if self.games == {}:
+            return 0
+        else:
+            for i in range(len(self.games) + 1):
+                if i not in self.games.keys():
+                    return i
     
+    def new_game(self, player=PLYR, dificulty=HARD):
+        pass
