@@ -1,3 +1,7 @@
+import copy
+import random
+import json
+
 #število vrstic in stolpcev
 COLLUMNS = 7
 ROWS = 6
@@ -15,7 +19,6 @@ PLYR = "Player"
 CMPTR = "Computer"
 PLYRS_1 = "Two_players_1"
 PLYRS_2 = "Two_players_2"
-
 
 class Game():
     board = [[EMPTY for _ in range(COLLUMNS)] for _ in range(ROWS)]
@@ -44,7 +47,6 @@ class Game():
                         return starting_slot
         else:
             return EMPTY
-        
 
     #preverjanje ali je igre konec => kdo je zmagovalec
     def win(self):
@@ -62,15 +64,72 @@ class Game():
         if is_draw:
             return DRW
         else:
-            return EMPTY #EMPTY AL ERR??? 
-                
+            return EMPTY            
+
+
+    @staticmethod
+    def move_is_possible(board, collumn):
+        return board[0][collumn] == EMPTY
+
+    #poišče prvo prazno mesto v stolpcu, ki ga je izbral igralec
+    @staticmethod
+    def collumn_move(player, board, collumn):
+        for row in range(ROWS - 1, -1, -1):
+            if board[row][collumn] == EMPTY:
+                board[row][collumn] == player
+                return board
+
+
+    #POTEZA RAČUNALNIKA
 
 
 
 
+    #POTEZA IGRALCA
 
-    #izvajanje poteze igralca
-    def move(self, collumn):
-        pass
+    #Poteza igralca v igri proti računalniku
+    def single_player_move(self, collumn):
+        board = copy.deepcopy(self.board)
+        if not Game.move_is_possible(board, collumn):
+            return ERR
+        else:
+            self.board = Game.collumn_move(PLYR, self.board, collumn)
+            outcome = self.win()
+            if outcome == PLYR or outcome == CMPTR:
+                return outcome
+            else:
+                self.computer_move()
+                return self.win()
+    
+    #Poteza igralca v igri med dvema igralcema
+    def two_player_move(self, collumn):
+        if self.player == PLYRS_1:
+            board = copy.deepcopy(self.board)
+            if not Game.move_is_possible(board, collumn):
+                return ERR
+            else:
+                self.board = Game.collumn_move(PLYR, self.board, collumn)
+                outcome = self.win()
+                self.player = PLYRS_2
+                return outcome
+        elif self.player == PLYRS_2:
+            board = copy.deepcopy(self.board)
+            if not Game.move_is_possible(board, collumn):
+                return ERR
+            else:
+                self.board = Game.collumn_move(CMPTR, self.board, collumn)
+                outcome = self.win()
+                self.player = PLYRS_1
+                return outcome
+        else:
+            assert False
+
+
+    #funkcija, ki jo kličemo vedno, ko je na potezi igralec
+    def player_move(self, collumn):
+        if self.player == PLYRS_1 or self.player == PLYRS_2:
+            return self.two_player_move(collumn)
+        else:
+            return self.single_player_move(collumn)
         
     
