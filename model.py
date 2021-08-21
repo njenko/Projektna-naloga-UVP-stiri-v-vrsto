@@ -277,6 +277,38 @@ class ActiveGame():
                 if i not in self.games.keys():
                     return i
     
+    def upload_game_from_file(self):
+        with open(self.current_board_file) as file:
+            encrypted_games = json.load(file) #Dobimo slovar z (geslom, crke)
+            games = {}
+            for game_id in encrypted_games:
+                game = encrypted_games[game_id]
+                games[int(game_id)] = (Game(board=game["board"], player=game["player"], dificulty=game["dificulty"]), game["move"])
+            self.games = games
+        return
     
+    def write_game_in_file(self):
+        with open(self.current_board_file, "w") as file:
+            encrypted_games = {}
+            for game_id in self.games:
+                (game, move) = self.games[game_id]
+                encrypted_games[game_id] = {"player": game.player, "dificulty": game.dificulty, "board": game.board, "move": move}
+            json.dump(encrypted_games, file)
+        return
+
     def new_game(self, player=PLYR, dificulty=HARD):
-        pass
+        self.upload_game_from_file()
+        game = Game(player=player, dificulty=dificulty, board=[[EMPTY for _ in range(COLLUMNS)] for _ in range(ROWS)])
+        new_id = self.game_id_open()
+        self.games[new_id] = (game, BGN)
+        self.write_game_in_file()
+        return new_id
+
+
+    def move(self, game_id, collumn):
+        self.upload_game_from_file()
+        (game, _) = self.games[game_id]
+        move = game.player_move(collumn)
+        self.games[game_id] = (game, move)
+        self.write_game_in_file()
+        return
