@@ -7,7 +7,7 @@ COLLUMNS = 7
 ROWS = 6
 
 #Za lepši zapis kasneje
-EMPTY = " "
+EMPTY = "Empty"
 BGN = "Begin"
 
 DRW = "Draw"
@@ -20,15 +20,22 @@ CMPTR = "Computer"
 PLYRS_1 = "Two_players_1"
 PLYRS_2 = "Two_players_2"
 
+#Nujno mora biti vsaj en od COLLUMNS ali ROWS sod, drugace ni pošteno.
+if not COLLUMNS * ROWS % 2 == 0 or COLLUMNS < 4 or ROWS < 4:
+    assert False, "Napačne dimenzije tabele!"
+#Spodnje kolicine morajo biti nizi, saj drugace bottle sprozi error.
+if not(isinstance(PLYR, str) == isinstance(CMPTR, str) == isinstance(EASY, str) == isinstance(HARD, str) == isinstance(PLYRS_1, str) == isinstance(PLYRS_2, str)):
+    assert False, "Te količine morajo biti nizi!"
+
 class Game():
     board = [[EMPTY for _ in range(COLLUMNS)] for _ in range(ROWS)]
     
-    def __init__(self, board, dificulty, player=PLYR):
+    def __init__(self, board, dificulty=HARD, player=PLYR):
         self.player = player
         self.dificulty = dificulty
         self.board = board
         if self.player == CMPTR:        #če začne računalnik, da svoj prvi žeton na sredino (=> lahko predpostavimo da vedno začne igralec)
-                self.board[COLLUMNS - 1][(ROWS - 1) // 2] = CMPTR
+                self.board[ROWS - 1][(COLLUMNS - 1) // 2] = CMPTR
                 self.player = PLYR
 
 
@@ -56,7 +63,7 @@ class Game():
         for row in range(ROWS):
             for collumn in range(COLLUMNS):
                 if self.board[row][collumn] == EMPTY:
-                    draw_test = False
+                    is_draw = False
                 elif self.four_in_a_row(row, collumn) == PLYR:
                     return PLYR
                 elif self.four_in_a_row(row,collumn) == CMPTR:
