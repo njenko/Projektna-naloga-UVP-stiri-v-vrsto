@@ -102,7 +102,118 @@ class Game():
         self.board = copy.deepcopy(current_game_board)
         return game_enders
 
+    #preveri če s potezo omogočimo/preprečimo zmago igralcu
+    def smart_move(self, collumn):
+        current_game_board = copy.deepcopy(self.board)
+        self.board = Game.collumn_move(CMPTR, self.board, collumn)
+        if not Game.move_is_possible(self.board, collumn):
+            self.board = copy.deepcopy(current_game_board)
+            return True
+        else:
+            self.board = Game.collumn_move(PLYR, self.board, collumn)
+            if self.win() == PLYR:
+                self.board = copy.deepcopy(current_game_board)
+                return False
+            else:
+                self.board = copy.deepcopy(current_game_board)
+                return True
+
+    #poišče poteze, ki nam pripravijo 3 v vrsto (potencialno zmago)  
+    def two_move_win_check(self):
+        good_moves = set()
+        current_game_board = copy.deepcopy(self.board)
+        for collumn_1 in range(COLLUMNS):
+            board_1 = copy.deepcopy(current_game_board)
+            if Game.move_is_possible(board_1, collumn_1):
+                board_1 = Game.collumn_move(CMPTR, board_1, collumn_1)
+                for collumn_2 in range(COLLUMNS):
+                    board_2 = copy.deepcopy(board_1)
+                    if Game.move_is_possible(board_2, collumn_2):
+                        self.board = Game.collumn_move(CMPTR, board_2, collumn_2)
+                        if self.win() == CMPTR:
+                            good_moves.add(collumn_1)
+        self.board = copy.deepcopy(current_game_board)
+        return good_moves
+
+    #potezo računalnika razdelimo na tri dele, po tem, kakšno pomembnost ima možna poteza.
     
+    #Pregledamo poteze, ki jih dobimo s funkcijo game_ending_moves
+    def comptuer_move_1(self):
+        choices_1 = self.game_ending_moves()
+        if choices_1 == set():
+            return "None" 
+        for choice in choices_1:
+            if choice[0] == CMPTR:
+                collumn = choice[1]
+                self.board = Game.collumn_move(CMPTR, self.board, collumn)
+                return "end"
+        for choice in choices_1:
+            if choice[0] == PLYR:
+                collumn = choice[1]
+                self.board = Game.collumn_move(CMPTR, self.board, collumn)
+                return "end"
+
+    def computer_move_2(self):
+        choices_2 = []
+        for collumn in range(COLLUMNS):
+            for row in range(ROWS):
+                if self.board[row][collumn] != EMPTY:
+                    choices_2.append(collumn)
+        if len(choices_2) == 1:
+            collumn = choices_2[0]
+            if collumn == 0:
+                self.board[ROWS - 1][3] = CMPTR
+                return "end"
+            elif collumn == COLLUMNS - 1:
+                self.board[ROWS - 1][COLLUMNS - 4] = CMPTR
+                return "end"
+            elif collumn <= COLLUMNS // 2:
+                self.board[ROWS - 1][collumn + 1] = CMPTR
+                return "end"
+            elif collumn > COLLUMNS // 2:
+                self.board[ROWS - 1][collumn - 1] = CMPTR
+                return "end"
+            else:
+                assert False, "Error?"
+        choices_3 = self.two_move_win_check()
+        if not choices_3 == set():
+            collumn = random.sample(choices_3, 1)[0]
+            if self.smart_move(collumn):
+                self.board = Game.collumn_move(CMPTR, self.board, collumn)
+                return "end"
+        return "None"
+
+    def computer_move_3(self):
+        choices_4 = set()
+        choices_5 = set()
+        for collumn in range(COLLUMNS):
+            if Game.move_is_possible(self.board, collumn):
+                choices_5.add(collumn)
+                if self.smart_move(collumn):
+                    choices_4.add(collumn)
+        if not choices_4 == set():
+            collumn = random.sample(choices_4, 1)[0]
+            self.board = Game.collumn_move(CMPTR, self.board, collumn)
+            return "end"
+        else:
+            collumn = random.sample(choices_5, 1)[0]
+            self.board = Game.collumn_move(CMPTR, self.board, collumn)
+            return "end"
+    
+    def computer_move_main(self):
+        if self.dificulty == HARD:
+            test = self.comptuer_move_1()
+            if test == "None":
+                test = self.computer_move_2()
+                if test == "None":
+                    test = self.computer_move_3()
+        elif self.dificulty == EASY:
+            test = self.comptuer_move_1()
+            if test == "None":
+                test = self.computer_move_3()
+        else:
+            assert False, "Error?"
+
 
     #POTEZA IGRALCA
 
@@ -165,6 +276,7 @@ class ActiveGame():
             for i in range(len(self.games) + 1):
                 if i not in self.games.keys():
                     return i
+    
     
     def new_game(self, player=PLYR, dificulty=HARD):
         pass
