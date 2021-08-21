@@ -228,7 +228,7 @@ class Game():
             if outcome == PLYR or outcome == CMPTR:
                 return outcome
             else:
-                self.computer_move()
+                self.computer_move_main()
                 return self.win()
     
     #Poteza igralca v igri med dvema igralcema

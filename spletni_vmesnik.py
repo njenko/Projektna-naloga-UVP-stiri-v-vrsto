@@ -56,7 +56,7 @@ def make_a_move(n):
     return
 
 
-#SKLIKE
+#slike
 @bottle.get("/static/<filename>")
 def server_static(filename):
     return bottle.static_file(filename, root="./images")
