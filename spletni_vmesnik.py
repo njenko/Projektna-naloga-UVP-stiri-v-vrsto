@@ -1,7 +1,7 @@
 import bottle, model
 
 active_game = model.ActiveGame("stanje.json")
-SECRET_KEY = "bravo, uganil si kluc"
+SECRET_KEY = "Hello, 'tis me, the secret key "
 
 #začetna stran
 @bottle.get('/')
