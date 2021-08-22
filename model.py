@@ -42,7 +42,7 @@ class Game():
     #PREVERJANJE ZMAGE
 
     #iskanje štirih v vrsto
-    def four_in_a_row(self, row, collumn):
+    def row_of_four(self, row, collumn):
         #iskati rabimo samo v te štiri smeri, ker bomo postore preverjali od spodaj navzgor in od leve proti desni
         directions = {(0, 1), (1, 1), (1, 0), (1, -1)} 
         starting_slot = self.board[row][collumn]
@@ -64,9 +64,9 @@ class Game():
             for collumn in range(COLLUMNS):
                 if self.board[row][collumn] == EMPTY:
                     is_draw = False
-                elif self.four_in_a_row(row, collumn) == PLYR:
+                elif self.row_of_four(row, collumn) == PLYR:
                     return PLYR
-                elif self.four_in_a_row(row,collumn) == CMPTR:
+                elif self.row_of_four(row,collumn) == CMPTR:
                     return CMPTR
         if is_draw:
             return DRW
