@@ -1,12 +1,14 @@
 import bottle, model
 
 active_game = model.ActiveGame("stanje.json")
-SECRET_KEY = "Hello, 'tis me, the secret key "
+SECRET_KEY = "Hello, 'tis me, the secret key"
+
 
 #začetna stran
 @bottle.get('/')
 def front_page():
-    return bottle.template('Site/index.tpl')
+    return bottle.template('site/index.tpl')
+
 
 #reset
 @bottle.post('/')
@@ -14,10 +16,11 @@ def reset():
     bottle.redirect('/')
     return
 
+
 #gumb za začnejanje nove igre
 @bottle.post('/new_game/<player>/<dificulty>')
-def begin_new_game(player, dificulty):
-    #POST naredi novo igro, preusmeri na naslov za igranje te nove igre
+def start_new_game(player, dificulty):
+    #POST naredi novo igro, reusmeri na naslov za igranje te nove igre
     #igro proti računalniku začne igralec 
     if player == model.PLYR and dificulty == model.EASY:
         game_id = active_game.new_game(player=model.PLYR, dificulty=model.EASY)
@@ -32,7 +35,7 @@ def begin_new_game(player, dificulty):
     elif player == model.PLYRS_1 and dificulty == model.HARD:
         game_id = active_game.new_game(player=model.PLYRS_1, dificulty=model.HARD)
     else:
-        assert False, "Error?"
+        assert False, "Do sem se nebi smelo dati priti."
     bottle.response.set_cookie("game_id", game_id, secret=SECRET_KEY, path="/")
     bottle.redirect('/game/')
     return
@@ -43,8 +46,7 @@ def begin_new_game(player, dificulty):
 def show_game():
     game_id = bottle.request.get_cookie("game_id", secret=SECRET_KEY)
     (game, move) = active_game.games[game_id]
-    return bottle.template('Site/game.tpl', game=game, game_id=game_id, move=move)
-
+    return bottle.template('site/game.tpl', game=game, game_id=game_id, move=move)
 
 
 @bottle.post("/make_a_move/<n:int>")
