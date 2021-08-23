@@ -1,2 +1,6 @@
 # Projektna-naloga-UVP-stiri-v-vrsto
-Projektna naloga pri projektu UVP 2020/21
+Nejc Jenko, 2021
+==================================
+## Opis programa
+
+## Navodila za zagon in uporabo
