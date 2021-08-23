@@ -27,10 +27,10 @@
       <img src="/static/Player.png" class="picture"/>
   </div>
   <div id="s2">
-      <h1 class="ime">You</h1>
+      <h1 class="name">You</h1>
   </div>
   <div id="s3">
-      <h1 class="ime">Com</h1>
+      <h1 class="name">Com</h1>
   </div>
   <div id="s4">
       <img src="/static/Computer.png" class="picture"/>
